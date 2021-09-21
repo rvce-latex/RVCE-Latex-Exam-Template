@@ -1,0 +1,377 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[dvipsnames]{RVexam}
+
+%%%%%%%%%%%%%%%%%%%%%Packages%%%%%%%%%%%%%%%%%%
+\usepackage{tikz}
+\usetikzlibrary{shapes,snakes}
+\usepackage[american voltages, american currents,siunitx]{circuitikz}
+\usetikzlibrary{circuits.logic.US} 
+\ctikzset{tripoles/mos style/arrows}
+\ctikzset{tripoles/pmos style/emptycircle}
+\usetikzlibrary{decorations.text}%For text along the path
+\usetikzlibrary{intersections,calc,backgrounds}
+\usetikzlibrary{patterns}
+
+%%Tikz Graphs based
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}%for multiplot
+\usepackage[miktex]{gnuplottex}
+\usetikzlibrary{arrows}
+\usepackage{tikz-timing}
+\usetikztiminglibrary{overlays}%for overlap of 2 or more waves
+\usetikztiminglibrary{advnodes-cfr}%for using center of an edge
+%for removing the error while introducing \\ in text
+%%Others
+\usepackage{karnaughmap}[2013/12/06]
+
+\usepackage{cancel}
+%\usepackage[utf8]{inputenc}
+\usepackage{float}
+%\usepackage[demo]{graphicx}
+\usepackage{subcaption}
+\usepackage{sidecap}%For side captions
+
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumerate}
+
+\usepackage{siunitx}
+
+\usepackage[hidelinks]{hyperref}
+%\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{makecell}
+
+\usepackage[most]{tcolorbox}
+%Boxed text using "tcolorbox"
+\usepackage{varwidth}
+
+\usepackage{xcolor}
+\usepackage{color} % defines a new color
+\shadedsolutions % defines the style of the solution environment
+\definecolor{SolutionColor}{rgb}{0.95,0.95,0.95} % light blue
+
+% \framedsolutions % defines the style of the solution environment
+% Defines the title of the solution environment:
+\renewcommand{\solutiontitle}{\noindent\textbf{Solution:}\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%Macros%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\myparse}[2][sci,precision=2]{%
+  \pgfkeys{/pgf/fpu}%
+  \pgfmathparse{#2}%
+  \pgfmathprintnumber[#1]{\pgfmathresult}%
+  \pgfkeys{/pgf/fpu=false}%
+}
+
+\makeatletter
+\long\def\ifnodedefined#1#2#3{%
+    \@ifundefined{pgf@sh@ns@#1}{#3}{#2}%
+}
+\makeatother
+
+%Used to hide/show questions
+\newif\ifsee \seefalse
+
+\newif\ifkeepquestion \keepquestiontrue
+\NewEnviron{qsn}{\ifkeepquestion\BODY\fi}
+
+\newif\ifshortans \shortanstrue
+\NewEnviron{shortanswer}{\ifshortans\BODY\fi}
+
+\newif\iflongans \longansfalse
+\NewEnviron{longanswer}{\iflongans\BODY\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\printanswers %Used to print the answers
+%\noprintanswers
+\keepquestiontrue
+\shortanstrue
+\longansfalse
+\seefalse
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{AICD Test 3}
+\author{P Narashimaraja }
+\gdef\date{Jul 2021}
+
+\gdef\courseTitle{Analog IC Design}
+\gdef\courseCode{18EC46}
+\gdef\sem{IV}
+\ifsee{}\else
+\gdef\testTitle{Re-Test - 3} \fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifkeepquestion{
+%Header
+\gdef\lftfp{\includegraphics[width=1.5cm]{\pkgRef/RVCE_logo}}
+\gdef\midfp{
+\large\textbf{R.V.COLLEGE OF ENGINEERING, Bengaluru - 59}\\
+\normalsize\textbf{Department of Electronics \& Communication Engineering}\\
+\normalsize{\href{www.rvce.edu.in}{www.rvce.edu.in} ; \href{mailto://hod.ec@rvce.edu.in}{hod.ec@rvce.edu.in} ; +91-9900700990 ; 080-6717 8042}
+}
+\gdef\ritfp{}
+
+\gdef\lftrp{}
+\gdef\midrp{}
+\gdef\ritrp{\date}
+
+%Footer
+\gdef\@footrit{\thepage$\vert$\numpages}
+
+}\else{
+\gdef\lftfp{.\\
+\small\textbf{COURSE CODE:}\courseCode}
+\gdef\midfp{\small\textbf{SCHEME \& SOLUTION}\\
+\small\textbf{\qquad\qquad\;  COURSE:} \courseTitle}
+\gdef\ritfp{\date\\
+UG}
+
+\gdef\lftrp{.\\
+\small\textbf{COURSE CODE:}\courseCode}
+\gdef\midrp{\small\textbf{SCHEME \& SOLUTION}\\
+\small\textbf{\qquad\qquad\;  COURSE:} \courseTitle}
+\gdef\ritrp{\date\\
+UG}
+
+%Footer
+\gdef\@footrit{\thepage/\numpages}
+}
+\fi
+
+\pagestyle{headandfoot}
+\runningheadrule
+
+\firstpageheader{\leavevmode\lftfp}{\leavevmode\midfp}{\leavevmode\ritfp}
+\runningheader{\leavevmode\lftrp}{\leavevmode\midrp}{\leavevmode\ritrp}
+
+\firstpagefooter{}{}{\leavevmode\@footrit}
+\runningfooter{}{}{\leavevmode\@footrit}
+ 
+%For bookmarking the questions
+\hypersetup{
+    pdftitle={AICD Test 1},
+    pdfauthor={P Narashimaraja},
+    pdfsubject={AICD 18EC46},
+%    pdfkeywords={keyword1, keyword2},
+    bookmarksnumbered=true,     
+    bookmarksopen=true,         
+    bookmarksopenlevel=1,       
+    colorlinks=false,            
+    pdfstartview=FitH,           
+    pdfpagemode=UseOutlines,    % this is the option you were lookin for
+    pdfpagelayout=OneColumn
+}
+
+\begin{document}
+
+\ifsee{
+%\maketitle
+}\else{
+\begin{center}
+\sem\; Semester  \par
+\testTitle   \par
+\end{center}
+
+\begin{minipage}[t]{10cm}
+\flushleft
+\textbf{Course: \courseTitle}\par
+\textbf{Time: 1.5 Hours} \par
+\end{minipage}
+\hfill
+\begin{minipage}[t]{5cm}
+\flushright
+\textbf{Course Code: \courseCode}\par
+\textit{Max Marks: 50}
+\end{minipage}
+}
+\fi
+\vspace{0.2cm}
+%\textbf{Instructions to candidates:} Answer all the questions.\\ 
+\vspace{2mm}
+%\begin{tabularx}{\textwidth}{p{15cm} X} 
+%	\centerline{\textsc{Part a}} &  
+%\end{tabularx}
+
+\begin{questions}
+%\pointsinrightmargin
+\pointsdroppedatright
+
+%1
+\question[10]
+
+\xdef\Fo{(10*pow(10,3))}
+\xdef\Q{2}
+\xdef\C{(1*pow(10,-9))}
+Assuming ideal opamp, determine the transfer function of KHN biquad high pass filter. Design a KHN circuit to realize a high pass function with $f_{o}=\myparse[fixed]{\Fo*pow(10,-3)} KHz$ and $Q = \Q$, assume the integrators have same resistors and capacitors, with $C=\myparse[fixed]{\C*pow(10,9)}nF$. What is the value of high frequency gain obtained? What is the centre frequency gain of bandpass function that is simultaneously available at the output of the first integrator? 
+\droppoints
+
+\begin{solution}
+\begin{equation}
+\begin{split}
+\dfrac{V_{out}}{V_{in}}(S)&=\dfrac{b_{2}S^{2}}{S^{2}+\dfrac{\omega_{n}}{Q}S+\omega_{n}^{2}}\\
+V_{out}(S)&= b_{2}V_{in}(S)-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}V_{out}(S)-\dfrac{\omega^{2}_{n}}{S^{2}}V_{out}(S)
+\end{split}\tag{1M}
+\end{equation}
+\begin{minipage}{0.9\textwidth}
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to++(0.5,0)node[isosceles triangle, draw, anchor=west](b){$b_{2}$}
+	(b.east)++(0.5,0)node[circle, anchor=west, minimum height=0.7cm, draw](add){}
+	(add.west)++(0.1,0)to($(add.east)+(-0.1,0)$)
+	(add.north)++(0,-0.1)to($(add.south)+(0,0.1)$)
+	(add.east)to++(2,0)node[circ](v1){}
+	(v1.center)++(0,1)node[rectangle, draw, minimum width=1.5cm, anchor=south](fi){$-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}$}
+	(fi.west-|add.center)node[rectangle, draw, minimum width=1.5cm, anchor=center](si){$Q\omega_{n}\dfrac{1}{S}$}
+	($(si)!0.5!(fi)$)node[circ](v2){}
+	(v1.center)to++(0.5,0)node[ocirc]{}node[right]{$V_{out}(S)$}
+	;
+\draw[->](b.east)to(add.west)node[below left]{+};
+\draw[->](v1.center)to(fi.south);
+\draw[->](fi.west)to(si.east);
+\draw[->](si.south)to(add.north)node[above left]{+};
+\draw[->](v2.center)to(si.south-|v2)to(add.north east)node[above]{+};
+\end{tikzpicture}\\
+\begin{tikzpicture}[transform shape, scale=0.9]
+\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi1){}node[op amp, anchor=+](op1){$A_{1}$}
+	(op1.-)to++(0,1)node[circ](a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}to[R,l=$R$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi2){}node[op amp, anchor=-](op2){$A_{2}$}
+	(op2.+)node[ground]{}
+	(op2.-)to++(0,1)node(b){}to[C,l=$C$, /tikz/circuitikz/bipoles/length=1cm](b-|op2.out)to(op2.out)node[circ]{}to[R,l=$R$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi3){}node[op amp, anchor=-](op3){$A_{3}$}
+	(op3.+)node[ground]{}
+	(op3.-)to++(0,1)node(c){}to[C,l=$C$, /tikz/circuitikz/bipoles/length=1cm](c-|op3.out)node[circ](d){}to(op3.out)node[circ]{}to++(0.5,0)node[ocirc]{}node[right]{$V_{out}(S)$}
+	
+	(a.center)to++(0,1)node(e){}to[R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm](e-|d)to(d.center)
+	(op2.out)to($(op2.out|-op3.+)+(0,-0.5)$)node(f){}to[R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm](f-|vi1)to(vi1.center)
+	
+	(op1.out)node[below right]{$V_{hp}(S)$}
+	(op2.out)node[below right]{$V_{x}(S)$}
+	(op3.out)node[below right]{$V_{y}(S)$}
+	;
+\end{tikzpicture}
+\end{figure}
+\end{minipage}
+\begin{minipage}{0.1\textwidth}
+\hfill(2M)
+\end{minipage}
+Since $A_{1}$ can be visualized as a summer, as follows\\
+\begin{minipage}{0.9\textwidth}
+\begin{figure}[H]
+\center
+\begin{tikzpicture}
+\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
+	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{hp}(S)$}
+	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
+	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{x}(S)$}
+	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{y}(S)$}
+	;
+\end{tikzpicture}
+\end{figure}
+\end{minipage}
+\begin{minipage}{0.1\textwidth}
+
+\end{minipage}\\
+Since the circuit is LTI, one can exercise 3 input conditions as follows:\\
+\begin{minipage}{0.3\textwidth}%a
+\begin{figure}[H]
+\center
+\begin{tikzpicture}[transform shape, scale=0.75]
+\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
+	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o1}(S)$}
+	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
+	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
+	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
+	;
+\end{tikzpicture}
+\end{figure}
+\footnotesize
+\begin{equation}
+V_{o1}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\times \dfrac{R_{2}}{R_{1}+R_{2}}V_{in}(S) \nonumber
+\end{equation}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}%b
+\begin{figure}[H]
+\center
+\begin{tikzpicture}[transform shape, scale=0.75]
+\draw(0,0)node[ground]{}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
+	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o2}(S)$}
+	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
+	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{x}(S)$}
+	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
+	;
+\end{tikzpicture}
+\end{figure}
+\footnotesize
+\begin{equation}
+V_{o2}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\times \dfrac{R_{1}}{R_{1}+R_{2}}V_{x}(S) \nonumber
+\end{equation}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}%c
+\begin{figure}[H]
+\center
+\begin{tikzpicture}[transform shape, scale=0.75]
+\draw(0,0)node[ground]{}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
+	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o3}(S)$}
+	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
+	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
+	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{y}(S)$}
+	;
+\end{tikzpicture}
+\end{figure}
+\footnotesize
+\begin{equation}
+V_{o3}=-\dfrac{R_{3}}{R_{4}}V_{y}(S) \nonumber
+\end{equation}
+\end{minipage}
+\begin{minipage}{0.1\textwidth}
+
+\end{minipage}\\
+Adding all together
+\footnotesize
+\begin{equation}
+\begin{split}
+V_{out}(S)&=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}} V_{in}(S)+\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} V_{x}(S)-\dfrac{R_{3}}{R_{4}} V_{y}(S)\\
+V_{out}(S)&=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}} V_{in}(S)+\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} \dfrac{1}{SRC}V_{out}(S)-\dfrac{R_{3}}{R_{4}} \dfrac{1}{S^{2}(RC)^{2}}V_{out}(S)\\
+V_{out}(S)&= b_{2}V_{in}(S)-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}V_{out}(S)-\dfrac{\omega^{2}_{n}}{S^{2}}V_{out}(S)\\
+\end{split}\tag{\normalsize 2M}
+\end{equation}
+\normalsize
+Extracting the parameters\\
+\begin{minipage}{0.9\textwidth}
+\begin{align*}
+\omega^{2}_{n}=\dfrac{R_{3}}{R_{4}} \dfrac{1}{(RC)^{2}}; &\; \dfrac{\omega_{n}}{Q}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} \dfrac{1}{RC};& b_{2}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}};  \\
+\omega_{n}=\sqrt{\dfrac{R_{3}}{R_{4}}}\dfrac{1}{RC};&\; Q=\dfrac{\sqrt{\dfrac{R_{3}}{R_{4}}}}{\left(\dfrac{R_{3}+R_{4}}{R_{4}}\right)\left(\dfrac{R_{1}}{R_{1}+R_{2}}\right)};& b_{2}=\dfrac{\omega_{n}}{Q}\dfrac{R_{2}}{R_{1}}RC
+\end{align*}
+\end{minipage}
+\begin{minipage}{0.1\textwidth}
+\hfill(2M)
+\end{minipage}
+
+Now based on the given data for $Q=\Q$, set the following conditions:\\
+$R_{2}=\myparse[fixed]{2*\Q-1}R_{1}\;\text{and}\;R_{3}=R_{4}$ and taking $R_{1}=R_{3}=R_{4}=1k\Omega$ gives us $R_{2}=\myparse[fixed]{2*\Q-1}k\Omega$.
+\begin{equation}
+\begin{split}
+R&=\dfrac{1}{\omega_{n}\times C}=\myparse[fixed]{(1/(2*pi*\Fo*\C))*pow(10,-3)}\xdef\R{(\pgfmathresult*pow(10,3))}k\Omega\\
+b_{2}&=\dfrac{\omega_{n}}{Q}\dfrac{R_{2}}{R_{1}}RC=\myparse[fixed]{((2*pi*\Fo)/\Q)*(\Q+1)*\R*\C}\xdef\bb{\pgfmathresult}\\
+b_{1}&= b_{2}\times\omega_{n}=\myparse[sci]{(\bb*(2*pi*\Fo))}\\
+\end{split}\tag{3M}
+\end{equation}
+\end{solution}
+
+\end{questions}
+
+
+%\vspace{1cm}
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+% \multicolumn{13}{c}{BT-Blooms Taxonomy; CO-Course Outcomes; M-Marks}\\
+%\hline
+%\multirow{2}{*}{\makecell{\vspace{0.1cm}\\ Marks \\ Distribution}}& \multicolumn{2}{c|}{Particulars}& CO1 & CO2 & CO3 & CO4 & L1 & L2 & L3 & L4 & L5 & L6\\ \cline{2-13}
+%&Test & \makecell{Max \\ Marks} &20 &14 &10 &6 &15 &25 &6 &4 &- &-\\ 
+%\hline
+%\end{tabular}
+%\end{table}
+\end{document}
