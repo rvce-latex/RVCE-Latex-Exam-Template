@@ -1,6 +1,7 @@
 \PassOptionsToPackage{table,xcdraw}{xcolor}
-\documentclass[dvipsnames]{RVexam}
+\documentclass[dvipsnames]{rvexam}
 
+%\numofcos{3x}
 %%%%%%%%%%%%%%%%%%%%%Packages%%%%%%%%%%%%%%%%%%
 \usepackage{tikz}
 \usetikzlibrary{shapes,snakes}
@@ -42,10 +43,10 @@
 %\usepackage{fancyhdr}
 \usepackage{tabularx}
 
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{multicol}
-\usepackage{makecell}
+%\usepackage{booktabs}
+%\usepackage{multirow}
+%\usepackage{multicol}
+%\usepackage{makecell}
 
 \usepackage[most]{tcolorbox}
 %Boxed text using "tcolorbox"
@@ -106,7 +107,7 @@
 
 \ifkeepquestion{
 %Header
-\gdef\lftfp{\includegraphics[width=1.5cm]{\pkgRef/RVCE_logo}}
+\gdef\lftfp{\includegraphics[width=1.5cm]{Figs/RVCE_logo}}
 \gdef\midfp{
 \large\textbf{R.V.COLLEGE OF ENGINEERING, Bengaluru - 59}\\
 \normalsize\textbf{Department of Electronics \& Communication Engineering}\\
@@ -196,17 +197,19 @@ UG}
 %\end{tabularx}
 
 \begin{questions}
+%\pointsinleftmargin
 %\pointsinrightmargin
 \pointsdroppedatright
-
+\addpoints 
 %1
-\question[10]
-
+\question
+\begin{parts}
+\part[5][1][1]
 \xdef\Fo{(10*pow(10,3))}
 \xdef\Q{2}
 \xdef\C{(1*pow(10,-9))}
 Assuming ideal opamp, determine the transfer function of KHN biquad high pass filter. Design a KHN circuit to realize a high pass function with $f_{o}=\myparse[fixed]{\Fo*pow(10,-3)} KHz$ and $Q = \Q$, assume the integrators have same resistors and capacitors, with $C=\myparse[fixed]{\C*pow(10,9)}nF$. What is the value of high frequency gain obtained? What is the centre frequency gain of bandpass function that is simultaneously available at the output of the first integrator? 
-\droppoints
+%\droppoints
 
 \begin{solution}
 \begin{equation}
@@ -215,154 +218,102 @@ Assuming ideal opamp, determine the transfer function of KHN biquad high pass fi
 V_{out}(S)&= b_{2}V_{in}(S)-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}V_{out}(S)-\dfrac{\omega^{2}_{n}}{S^{2}}V_{out}(S)
 \end{split}\tag{1M}
 \end{equation}
-\begin{minipage}{0.9\textwidth}
-\begin{figure}[H]
-\center
-\begin{tikzpicture}
-\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to++(0.5,0)node[isosceles triangle, draw, anchor=west](b){$b_{2}$}
-	(b.east)++(0.5,0)node[circle, anchor=west, minimum height=0.7cm, draw](add){}
-	(add.west)++(0.1,0)to($(add.east)+(-0.1,0)$)
-	(add.north)++(0,-0.1)to($(add.south)+(0,0.1)$)
-	(add.east)to++(2,0)node[circ](v1){}
-	(v1.center)++(0,1)node[rectangle, draw, minimum width=1.5cm, anchor=south](fi){$-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}$}
-	(fi.west-|add.center)node[rectangle, draw, minimum width=1.5cm, anchor=center](si){$Q\omega_{n}\dfrac{1}{S}$}
-	($(si)!0.5!(fi)$)node[circ](v2){}
-	(v1.center)to++(0.5,0)node[ocirc]{}node[right]{$V_{out}(S)$}
-	;
-\draw[->](b.east)to(add.west)node[below left]{+};
-\draw[->](v1.center)to(fi.south);
-\draw[->](fi.west)to(si.east);
-\draw[->](si.south)to(add.north)node[above left]{+};
-\draw[->](v2.center)to(si.south-|v2)to(add.north east)node[above]{+};
-\end{tikzpicture}\\
-\begin{tikzpicture}[transform shape, scale=0.9]
-\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi1){}node[op amp, anchor=+](op1){$A_{1}$}
-	(op1.-)to++(0,1)node[circ](a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}to[R,l=$R$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi2){}node[op amp, anchor=-](op2){$A_{2}$}
-	(op2.+)node[ground]{}
-	(op2.-)to++(0,1)node(b){}to[C,l=$C$, /tikz/circuitikz/bipoles/length=1cm](b-|op2.out)to(op2.out)node[circ]{}to[R,l=$R$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vi3){}node[op amp, anchor=-](op3){$A_{3}$}
-	(op3.+)node[ground]{}
-	(op3.-)to++(0,1)node(c){}to[C,l=$C$, /tikz/circuitikz/bipoles/length=1cm](c-|op3.out)node[circ](d){}to(op3.out)node[circ]{}to++(0.5,0)node[ocirc]{}node[right]{$V_{out}(S)$}
-	
-	(a.center)to++(0,1)node(e){}to[R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm](e-|d)to(d.center)
-	(op2.out)to($(op2.out|-op3.+)+(0,-0.5)$)node(f){}to[R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm](f-|vi1)to(vi1.center)
-	
-	(op1.out)node[below right]{$V_{hp}(S)$}
-	(op2.out)node[below right]{$V_{x}(S)$}
-	(op3.out)node[below right]{$V_{y}(S)$}
-	;
-\end{tikzpicture}
-\end{figure}
-\end{minipage}
-\begin{minipage}{0.1\textwidth}
-\hfill(2M)
-\end{minipage}
-Since $A_{1}$ can be visualized as a summer, as follows\\
-\begin{minipage}{0.9\textwidth}
-\begin{figure}[H]
-\center
-\begin{tikzpicture}
-\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
-	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{hp}(S)$}
-	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
-	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{x}(S)$}
-	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{y}(S)$}
-	;
-\end{tikzpicture}
-\end{figure}
-\end{minipage}
-\begin{minipage}{0.1\textwidth}
 
-\end{minipage}\\
-Since the circuit is LTI, one can exercise 3 input conditions as follows:\\
-\begin{minipage}{0.3\textwidth}%a
-\begin{figure}[H]
-\center
-\begin{tikzpicture}[transform shape, scale=0.75]
-\draw(0,0)node[ocirc]{}node[left]{$V_{in}(S)$}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
-	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o1}(S)$}
-	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
-	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
-	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
-	;
-\end{tikzpicture}
-\end{figure}
-\footnotesize
-\begin{equation}
-V_{o1}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\times \dfrac{R_{2}}{R_{1}+R_{2}}V_{in}(S) \nonumber
-\end{equation}
-\end{minipage}
-\begin{minipage}{0.3\textwidth}%b
-\begin{figure}[H]
-\center
-\begin{tikzpicture}[transform shape, scale=0.75]
-\draw(0,0)node[ground]{}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
-	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o2}(S)$}
-	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
-	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{x}(S)$}
-	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
-	;
-\end{tikzpicture}
-\end{figure}
-\footnotesize
-\begin{equation}
-V_{o2}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\times \dfrac{R_{1}}{R_{1}+R_{2}}V_{x}(S) \nonumber
-\end{equation}
-\end{minipage}
-\begin{minipage}{0.3\textwidth}%c
-\begin{figure}[H]
-\center
-\begin{tikzpicture}[transform shape, scale=0.75]
-\draw(0,0)node[ground]{}to[R,l_=$R_{1}$, /tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vp){}node[op amp, anchor=+](op1){$A_{1}$}
-	(op1.out)to++(0.5,0)node[ocirc]{}node[right]{$V_{o3}(S)$}
-	(op1.-)node[circ]{}to++(0,1)node(a){}to[R,l=$R_{3}$, /tikz/circuitikz/bipoles/length=1cm](a-|op1.out)to(op1.out)node[circ]{}
-	(vp.center)to++(0,-1)to [R,l=$R_{2}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ground]{}
-	(op1.-)to [R,l=$R_{4}$, /tikz/circuitikz/bipoles/length=1cm]++(-1.5,0)node[ocirc]{}node[left]{$V_{y}(S)$}
-	;
-\end{tikzpicture}
-\end{figure}
-\footnotesize
-\begin{equation}
-V_{o3}=-\dfrac{R_{3}}{R_{4}}V_{y}(S) \nonumber
-\end{equation}
-\end{minipage}
-\begin{minipage}{0.1\textwidth}
-
-\end{minipage}\\
-Adding all together
-\footnotesize
-\begin{equation}
-\begin{split}
-V_{out}(S)&=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}} V_{in}(S)+\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} V_{x}(S)-\dfrac{R_{3}}{R_{4}} V_{y}(S)\\
-V_{out}(S)&=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}} V_{in}(S)+\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} \dfrac{1}{SRC}V_{out}(S)-\dfrac{R_{3}}{R_{4}} \dfrac{1}{S^{2}(RC)^{2}}V_{out}(S)\\
-V_{out}(S)&= b_{2}V_{in}(S)-\dfrac{\omega_{n}}{Q}\dfrac{1}{S}V_{out}(S)-\dfrac{\omega^{2}_{n}}{S^{2}}V_{out}(S)\\
-\end{split}\tag{\normalsize 2M}
-\end{equation}
-\normalsize
-Extracting the parameters\\
-\begin{minipage}{0.9\textwidth}
-\begin{align*}
-\omega^{2}_{n}=\dfrac{R_{3}}{R_{4}} \dfrac{1}{(RC)^{2}}; &\; \dfrac{\omega_{n}}{Q}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{1}}{R_{1}+R_{2}} \dfrac{1}{RC};& b_{2}=\left(1+\dfrac{R_{3}}{R_{4}}\right)\dfrac{R_{2}}{R_{1}+R_{2}};  \\
-\omega_{n}=\sqrt{\dfrac{R_{3}}{R_{4}}}\dfrac{1}{RC};&\; Q=\dfrac{\sqrt{\dfrac{R_{3}}{R_{4}}}}{\left(\dfrac{R_{3}+R_{4}}{R_{4}}\right)\left(\dfrac{R_{1}}{R_{1}+R_{2}}\right)};& b_{2}=\dfrac{\omega_{n}}{Q}\dfrac{R_{2}}{R_{1}}RC
-\end{align*}
-\end{minipage}
-\begin{minipage}{0.1\textwidth}
-\hfill(2M)
-\end{minipage}
-
-Now based on the given data for $Q=\Q$, set the following conditions:\\
-$R_{2}=\myparse[fixed]{2*\Q-1}R_{1}\;\text{and}\;R_{3}=R_{4}$ and taking $R_{1}=R_{3}=R_{4}=1k\Omega$ gives us $R_{2}=\myparse[fixed]{2*\Q-1}k\Omega$.
-\begin{equation}
-\begin{split}
-R&=\dfrac{1}{\omega_{n}\times C}=\myparse[fixed]{(1/(2*pi*\Fo*\C))*pow(10,-3)}\xdef\R{(\pgfmathresult*pow(10,3))}k\Omega\\
-b_{2}&=\dfrac{\omega_{n}}{Q}\dfrac{R_{2}}{R_{1}}RC=\myparse[fixed]{((2*pi*\Fo)/\Q)*(\Q+1)*\R*\C}\xdef\bb{\pgfmathresult}\\
-b_{1}&= b_{2}\times\omega_{n}=\myparse[sci]{(\bb*(2*pi*\Fo))}\\
-\end{split}\tag{3M}
-\end{equation}
 \end{solution}
 
+\part[5][3][3]
+fl;kajs \droppoints
+\end{parts}
+
+\question[10][3][4]
+\xdef\Fo{(10*pow(10,3))}
+\xdef\Q{2}
+\xdef\C{(1*pow(10,-9))}
+Assuming ideal opamp, determine the transfer function of KHN biquad high pass filter. Design a KHN circuit to realize a high pass function with $f_{o}=\myparse[fixed]{\Fo*pow(10,-3)} KHz$ and $Q = \Q$, assume the integrators have same resistors and capacitors, with $C=\myparse[fixed]{\C*pow(10,9)}nF$. What is the value of high frequency gain obtained? What is the centre frequency gain of bandpass function that is simultaneously available at the output of the first integrator? 
+\droppoints
+
+\question
+\begin{parts}
+\part[7][2][6]
+%a
+\xdef\Vdd{3}
+\xdef\Kn{(36*pow(10,-5))}
+\xdef\Kp{(9*pow(10,-5))}
+\xdef\VTn{0.7}
+\xdef\VTp{0.8}
+\xdef\WLa{(50/0.5)}
+\xdef\WLb{(72/0.5)}
+\xdef\Iss{(1*pow(10,-3))}
+\xdef\Io{(0.5*pow(10,-3))}
+\xdef\lmbn{0.1}
+\xdef\lmbp{0.1}
+In the two-stage op-amp of Fig.a, $(W/L)=\WLa$ for all transistors except for $M_{5}$, for which $(W/L)_{5}=\WLb$. Also, $I_{D7}=\myparse[fixed]{\Iss*pow(10,3)} mA$ and the output branch is biased at $\myparse[fixed]{\Io*pow(10,3)} mA$. Given $V_{DD}=\Vdd V, K^{'}_{n}=\myparse[fixed]{\Kn*pow(10,6)}\mu A/V^{2}, K^{'}_{p}=\myparse[fixed]{\Kp*pow(10,6)}\mu A/V^{2}, \lambda_{n}=\lmbn V^{-1}, \lambda_{p}=\lmbp V^{-1}, V_{Tn}=\VTn V$ and $V_{Tp}=-\VTp V$.
+\begin{enumerate}[i.]
+\item Determine the CM level at nodes X and Y.
+\item Calculate the maximum output voltage swing.
+\item Calculate the total gain of the op-amp.
+\end{enumerate}
+\droppoints
+ 
+\begin{figure}[H]
+\begin{subfigure}[b]{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+\draw(0,0)node[ground](gnd){}node[nmos, anchor=S, xscale=-1](m3){}++(2,0)node[ground]{}node[nmos, anchor=S, xscale=1](m4){}
+	(m3.D)node[circ]{}-|(m3.G)node[circ]{}to(m4.G)
+	(m3.D)node[left]{X}to++(0,1)node[pmos, anchor=D](m1){}
+	(m4.D)node[left]{Y}node[circ]{}to++(0,1)node[pmos, anchor=D, xscale=-1](m2){}
+	(m1.S)to(m2.S)
+	($(m1.S)!0.5!(m2.S)$)node[circ](vp){}node[pmos, anchor=D](m7){}
+	
+	(m4.D)to++(1,0)node[nmos, anchor=G](m5){}
+	(m5.S)node[ground]{}
+	(m5.D|-m7.D)node[pmos, anchor=D](m6){}
+	(m5.D)to(m6.D)
+	($(m5.D)!0.5!(m6.D)$)node[circ](vo){}to++(0.5,0)node[ocirc]{}node[right]{$V_{out}$}
+	
+	(m6.G)to(m7.G)node[circ]{}node[left]{$V_{B}$}
+	(m2.G)to(m2.G|-m2.D)to(m1.G|-m1.D)node[ocirc]{}
+	($(m1.G)!0.5!(m1.G|-m1.D)$)node{$V_{in}$}
+	(m1.G)node[ocirc]{}
+	(m4.G)++(1,0)node[right]{$M_{4}$}
+	(m1.G)++(1,0)node[right]{$M_{1}$}
+	(m3.G)++(-1,0)node[left]{$M_{3}$}
+	(m2.G)++(-1,0)node[left]{$M_{2}$}
+	(m5.G)++(1,0)node[right]{$M_{5}$}
+	(m6.G)++(1,0)node[right]{$M_{6}$}
+	(m7.G)++(1,0.5)node[right]{$M_{7}$}
+	;
+\draw[very thick](m7.S)++(-0.5,0)to($(m6.S)+(0.5,0)$);
+\end{tikzpicture}
+\caption*{Fig.a}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+\draw(0,0)node[ground](gnd){}to [V,l=$v_{s}$, invert]++(0,2)to[R,l=$R_{1}$,/tikz/circuitikz/bipoles/length=1cm]++(1.5,0)node[circ](vm){}node[op amp, anchor=-, yscale=1](op){}
+	(vm.center)to++(0,1)node(vm2){}to[R,l=$R_{2}$,/tikz/circuitikz/bipoles/length=1cm](vm2-|op.out)to(op.out)node[circ](out){}to++(0.5,0)node[ocirc](out2){}node[right]{$v_{out}$}
+	(op.+)node(vp){}to(vp|-gnd)node[ground]{}
+	;
+\end{tikzpicture}
+\caption*{Fig.b}
+\end{subfigure}
+\end{figure}
+
+%b
+\part[3][3][2]
+\xdef\bta{0.75}
+\xdef\gerr{0.01}
+\xdef\Ra{(1*pow(10,3))}
+\pgfmathparse{(\bta/(1-\bta))}\xdef\Acl{\pgfmathresult}
+If the above op-amp is used in a closed loop configuration (as shown in Fig.b) with $R_{1}=\myparse[fixed]{\Ra*pow(10,-3)} k\Omega$ to achieve a closed-loop DC gain of $-\myparse[fixed]{(\bta/(1-\bta))}\xdef\Acl{\pgfmathresult}$, calculate the value of $R_{2}$ that is required to achieve the required closed-loop gain and the gain error that results due to finite open-loop gain.
+\droppoints
+
+\end{parts}
 \end{questions}
 
-
+\cobttable
 %\vspace{1cm}
 %\begin{table}[H]
 %\centering
