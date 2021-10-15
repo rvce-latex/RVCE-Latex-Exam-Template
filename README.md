@@ -8,7 +8,11 @@ Since our institution needs to know how many marks of Questions are mapped acros
 ## How to use this `rvexam` class?
 One can follow all the instructions given in `exam.cls` for basic usage of this class. Here I will only try to present the extra/modification of commands to generate the CO & BT table.
 1. Defining CO and BT level for each question (or) to each part (or) to each subpart. As an example,
-> `\question[10][2][3]`
 
-    Here the `\question` command uses 3 arguments, instead of one. The first argument is for **Marks** 
-    
+> `\question[10][2][3]`: 
+    Here the `\question` command uses 3 arguments, instead of one. The first argument is for **Marks** (i.e Marks=10), the second argument is for **Course Outcome** (i.e CO=2: Maps the current question to 2nd CO of the course) and finally, the third argument is for **Bloom's Taxonomy** level (i.e L=3: representing the level of this question)
+
+> `\part[5][4][6]`: Similar to the previous case, the sub part represents Marks, CO and BT level with it's argument.
+ 2. To generate the table at the end of the paper, use the following command
+
+ > `\cobttable`
