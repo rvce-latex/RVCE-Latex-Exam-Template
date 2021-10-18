@@ -1,4 +1,6 @@
 %Used while compiling and creating log information
+%
+% Added title header for CIE 18/10/2021
 \def\fileversion{1.0}
 \def\filedate{2021/10/15}
 
@@ -312,7 +314,7 @@
 
 \newenvironment{coverpages}{%
     \ifnum \value{numquestions}>0\relax
-      \ClassError{RVexam}{%
+      \ClassError{rvexam}{%
         Coverpages cannot be used after questions have begun.\MessageBreak
       }{%
         All question, part, subpart, and subsubpart environments
@@ -333,7 +335,7 @@
 }
 
 \newcommand*\cover@question@error{%
-  \ClassError{RVexam}{%
+  \ClassError{rvexam}{%
     No questions are allowed in the cover pages.\MessageBreak
   }{%
     All question, part, subpart, and subsubpart environments
@@ -881,6 +883,8 @@
     }%
 }% CheckIfChanged@hlf
 
+% Added title header for CIE 18/10/2021
+\AtBeginDocument{\dotitle}
 
 \AtEndDocument{%
   \clearpage
@@ -6093,6 +6097,63 @@
   \sloppy
 %  \let\\\@normalcr
 }
+
+%--------------------------------------------------------------------
+%--------------------------------------------------------------------
+%
+%                     ***************************
+%                     ** Title commands **
+%                     ***************************
+\def\examdate#1{\gdef\@examdate{#1}}
+\def\examtime#1{\gdef\@examtime{#1}}
+\def\coursetitle#1{\gdef\@coursetitle{#1}}
+\def\coursecode#1{\gdef\@coursecode{#1}}
+\def\semester#1{\gdef\@semester{#1}}
+\def\cietitle#1{\gdef\@cietitle{#1}}
+\def\maxmarks#1{\gdef\@maxmarks{#1}}
+
+\def\settitle#1{
+  \@ifundefined{@#1}{\texttt{\string\ #1} \texttt{ not set. Fix it.}}{\csname @#1\endcsname}
+}
+
+\newcommand*\@dotitle{%
+  \if@coverpages
+    % Do Nothing
+  \else
+    \ifnum\value{page}=1\relax
+      \@fulltitle
+    \fi
+  \fi
+}
+
+\newcommand*\@fulltitle{%
+  \vbox to 2.5\headheight{%
+    \vss
+    \hbox to \textwidth{%
+      \normalfont\rlap{\parbox[b]{\textwidth}{\raggedright \strut}}%
+        \hss\parbox[b]{\textwidth}{\centering \settitle{semester}-Semester\strut}\hss
+        \llap{\parbox[b]{\textwidth}{\raggedleft\strut}}%
+    }% hbox
+    \hbox to \textwidth{%
+      \normalfont\rlap{\parbox[b]{\textwidth}{\raggedright \strut}}%
+        \hss\parbox[b]{\textwidth}{\centering \settitle{cietitle}\strut}\hss
+        \llap{\parbox[b]{\textwidth}{\raggedleft\strut}}%
+    }% hbox
+    \hbox to 1.1\textwidth{%
+      \normalfont\rlap{\parbox[b]{\textwidth}{\raggedright Course:\settitle{coursetitle}\strut}}%
+        \hss\parbox[b]{\textwidth}{\centering \strut}\hss
+        \llap{\parbox[b]{\textwidth}{\raggedleft Course code:\settitle{coursecode}\strut}}%
+    }% hbox
+    \hbox to 1.1\textwidth{%
+      \normalfont\rlap{\parbox[b]{\textwidth}{\raggedright Duration:\settitle{examtime}\;mins\strut}}%
+        \hss\parbox[b]{\textwidth}{\centering \strut}\hss
+        \llap{\parbox[b]{\textwidth}{\raggedleft Max. Marks:\settitle{maxmarks}\strut}}%
+    }% hbox
+  \hrule
+  }% vbox
+}
+
+\def\dotitle{\@dotitle}
 
 %  Compatibility with previous versions (temporary!):
 % psh: we'll remove this 2017-09-21
